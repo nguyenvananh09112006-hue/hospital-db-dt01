@@ -6,8 +6,6 @@ Hệ thống quản lý bệnh viện với 4 tác nhân: Nhân viên hành chí
 
 ## Công nghệ
 
-## Công nghệ
-
 | Thành phần | Phiên bản |
 | --- | --- |
 | Java (JDK LTS) | Java 17 LTS / Java 21 LTS |
