@@ -6,14 +6,18 @@ Hệ thống quản lý bệnh viện với 4 tác nhân: Nhân viên hành chí
 
 ## Công nghệ
 
-| Thành phần | Phiên bản |
-| --- | --- |
-| Java (JDK LTS) | Java 17 LTS / Java 21 LTS |
-| Spring Boot | Spring Boot 3.3.x |
-| JPA / Hibernate | Hibernate 6.x |
-| Flyway | Flyway 10.x |
-| Hệ QTCSDL | PostgreSQL 16 (Alpine Docker) |
-| Container | Docker Compose v2.x |
+| Thành phần | Phiên bản | Ghi chú |
+| --- | --- | --- |
+| Java (JDK) | 25 LTS | Bản LTS mới nhất |
+| Spring Boot | 4.1.x | Bản ổn định mới nhất |
+| Spring Data JPA / Hibernate | Theo Spring Boot 4.1 | Không khai báo version riêng trong `pom.xml` |
+| Flyway | Theo Spring Boot 4.1 | Kèm `flyway-database-postgresql`; không dùng `ddl-auto=update` |
+| PostgreSQL | 18 | Image Docker `postgres:18-alpine` |
+| Testcontainers | Theo Spring Boot 4.1 | Kiểm thử trên PostgreSQL thật |
+| Docker Compose | v2 | Lệnh `docker compose` (không có dấu gạch ngang) |
+| Build | Maven (Maven Wrapper `./mvnw`) | |
+
+> Phiên bản chính xác của Hibernate, Flyway, Testcontainers ghi theo `pom.xml` sau khi TV5 khởi tạo dự án (tuần 3).
 
 ## Chạy dự án (≤ 5 lệnh)
 
