@@ -4,11 +4,11 @@
 
 | Thành viên | GitHub | Vai trò kỹ thuật | Phân hệ (actor) | Thư mục chính |
 | --- | --- | --- | --- | --- |
-| TV1 – _Họ tên_ | @_username_ | Trưởng nhóm / Phân tích nghiệp vụ; bảo mật, phân quyền, sao lưu | Quản trị viên | `docs/`, `database/security/`, `database/backup/` |
-| TV2 – _Họ tên_ | @_username_ | Thiết kế CSDL: ERD, chuẩn hóa, DDL, migration, dữ liệu mẫu | Nhân viên hành chính | `database/migrations/`, `database/seed/`, `docs/erd/` |
-| TV3 – _Họ tên_ | @_username_ | Lập trình CSDL: truy vấn, view, chỉ mục, EXPLAIN | Bác sĩ | `database/queries.sql`, `database/programmability/views/`, `database/performance/` |
-| TV4 – _Họ tên_ | @_username_ | DBA: thủ tục, hàm, trigger, giao dịch đồng thời | Dược sĩ | `database/programmability/`, `tests/concurrency/` |
-| TV5 – _Họ tên_ | @_username_ | Phát triển ứng dụng: ORM, API, kiểm thử, Docker | Lịch hẹn + khung ứng dụng | `app/`, `tests/`, `docker-compose.yml` |
+| TV1 – _Nguyễn Vân Anh_ | @_username_ | Trưởng nhóm / Phân tích nghiệp vụ; bảo mật, phân quyền, sao lưu | Quản trị viên | `docs/`, `database/security/`, `database/backup/` |
+| TV2 – _Nguyễn Thị Thùy Dung_ | @_username_ | Thiết kế CSDL: ERD, chuẩn hóa, DDL, migration, dữ liệu mẫu | Nhân viên hành chính | `database/migrations/`, `database/seed/`, `docs/erd/` |
+| TV3 – _Lương Tiến Dũng_ | @_username_ | Lập trình CSDL: truy vấn, view, chỉ mục, EXPLAIN | Bác sĩ | `database/queries.sql`, `database/programmability/views/`, `database/performance/` |
+| TV4 – _Phùng Thị Minh Anhs_ | @_username_ | DBA: thủ tục, hàm, trigger, giao dịch đồng thời | Dược sĩ | `database/programmability/`, `tests/concurrency/` |
+| TV5 – _Đinh Tuấn Cường_ | @_username_ | Phát triển ứng dụng: ORM, API, kiểm thử, Docker | Lịch hẹn + khung ứng dụng | `app/`, `tests/`, `docker-compose.yml` |
 
 Mọi thành viên đều tự viết SQL và phải giải thích được toàn bộ lược đồ khi vấn đáp.
 
