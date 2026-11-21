@@ -3,9 +3,9 @@
 
 * **Học phần:** Đồ án Cơ sở dữ liệu (Khoa CNTT – Bộ môn HTTT, Trường ĐH Công nghệ Giao thông vận tải)
 * **Giảng viên hướng dẫn:** ThS. NCS Trần Đức Thắng
-* **Nhóm thực hiện:** Nhóm 1 (Lớp: Đồ án CSDL)
+* **Nhóm thực hiện:** Nhóm 1 (Lớp: 75DCHT23)
 * **Thành viên:**
-  1. Nguyễn Văn Anh (Trưởng nhóm / Phân tích nghiệp vụ - TV1)
+  1. Nguyễn Vân Anh (Trưởng nhóm / Phân tích nghiệp vụ - TV1)
   2. Nguyễn Thị Thùy Dung (Thiết kế CSDL - TV2)
   3. Lương Tiến Dũng (Lập trình CSDL - TV3)
   4. Phùng Thị Minh Ánh (DBA - TV4)
