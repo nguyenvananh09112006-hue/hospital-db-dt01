@@ -1,0 +1,33 @@
+# Bí mật – KHÔNG commit
+.env
+*.env.local
+
+# Java / Maven / Gradle
+target/
+build/
+.gradle/
+*.class
+*.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+hs_err_pid*
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# File sao lưu CSDL (chỉ commit script, không commit dữ liệu)
+database/backup/*.dump
+database/backup/*.backup
+database/backup/*.sql.gz
+*.tar.gz
+
+# Log
+*.log
+logs/
+
+# Kết quả kiểm thử tải
+tests/**/results/
