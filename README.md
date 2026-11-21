@@ -6,14 +6,16 @@ Hệ thống quản lý bệnh viện với 4 tác nhân: Nhân viên hành chí
 
 ## Công nghệ
 
+## Công nghệ
+
 | Thành phần | Phiên bản |
 | --- | --- |
-| Java (JDK LTS) | _điền khi chốt_ |
-| Spring Boot | _điền khi chốt_ |
-| JPA / Hibernate | _điền khi chốt_ |
-| Flyway | _điền khi chốt_ |
-| PostgreSQL | _điền khi chốt_ |
-| Docker / Docker Compose | _điền khi chốt_ |
+| Java (JDK LTS) | Java 17 LTS / Java 21 LTS |
+| Spring Boot | Spring Boot 3.3.x |
+| JPA / Hibernate | Hibernate 6.x |
+| Flyway | Flyway 10.x |
+| Hệ QTCSDL | PostgreSQL 16 (Alpine Docker) |
+| Container | Docker Compose v2.x |
 
 ## Chạy dự án (≤ 5 lệnh)
 
