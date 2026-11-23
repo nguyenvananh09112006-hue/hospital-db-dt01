@@ -5,10 +5,10 @@
 | Thành viên | GitHub | Vai trò kỹ thuật | Phân hệ (actor) | Thư mục chính |
 | --- | --- | --- | --- | --- |
 | TV1 – _Nguyễn Vân Anh_ | @nguyenvananh09112006-hue | Trưởng nhóm / Phân tích nghiệp vụ; bảo mật, phân quyền, sao lưu | Quản trị viên | `docs/`, `database/security/`, `database/backup/` |
-| TV2 – _Nguyễn Thị Thùy Dung_ | @_username_ | Thiết kế CSDL: ERD, chuẩn hóa, DDL, migration, dữ liệu mẫu | Nhân viên hành chính | `database/migrations/`, `database/seed/`, `docs/erd/` |
-| TV3 – _Lương Tiến Dũng_ | @_username_ | Lập trình CSDL: truy vấn, view, chỉ mục, EXPLAIN | Bác sĩ | `database/queries.sql`, `database/programmability/views/`, `database/performance/` |
-| TV4 – _Phùng Thị Minh Ánh_ | @_username_ | DBA: thủ tục, hàm, trigger, giao dịch đồng thời | Dược sĩ | `database/programmability/`, `tests/concurrency/` |
-| TV5 – _Đinh Tuấn Cường_ | @_username_ | Phát triển ứng dụng: ORM, API, kiểm thử, Docker | Lịch hẹn + khung ứng dụng | `app/`, `tests/`, `docker-compose.yml` |
+| TV2 – _Nguyễn Thị Thùy Dung_ | @dungnguyen280706 | Thiết kế CSDL: ERD, chuẩn hóa, DDL, migration, dữ liệu mẫu | Nhân viên hành chính | `database/migrations/`, `database/seed/`, `docs/erd/` |
+| TV3 – _Lương Tiến Dũng_ | @luongtiendung-tech | Lập trình CSDL: truy vấn, view, chỉ mục, EXPLAIN | Bác sĩ | `database/queries.sql`, `database/programmability/views/`, `database/performance/` |
+| TV4 – _Phùng Thị Minh Ánh_ | @phunganh2006123-cmyk | DBA: thủ tục, hàm, trigger, giao dịch đồng thời | Dược sĩ | `database/programmability/`, `tests/concurrency/` |
+| TV5 – _Đinh Tuấn Cường_ | @cuongdanghocutt-afk | Phát triển ứng dụng: ORM, API, kiểm thử, Docker | Lịch hẹn + khung ứng dụng | `app/`, `tests/`, `docker-compose.yml` |
 
 Mọi thành viên đều tự viết SQL và phải giải thích được toàn bộ lược đồ khi vấn đáp.
 
