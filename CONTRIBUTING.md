@@ -1,16 +1,22 @@
-# Quy ước làm việc nhóm
+# Quy ước làm việc nhóm – DT01 Quản lý bệnh viện (Nhóm 1)
 
 ## Phân công
 
-| Thành viên | GitHub | Vai trò kỹ thuật | Phân hệ (actor) | Thư mục chính |
-| --- | --- | --- | --- | --- |
-| TV1 – _Nguyễn Vân Anh_ | @nguyenvananh09112006-hue | Trưởng nhóm / Phân tích nghiệp vụ; bảo mật, phân quyền, sao lưu | Quản trị viên | `docs/`, `database/security/`, `database/backup/` |
-| TV2 – _Nguyễn Thị Thùy Dung_ | @dungnguyen280706 | Thiết kế CSDL: ERD, chuẩn hóa, DDL, migration, dữ liệu mẫu | Nhân viên hành chính | `database/migrations/`, `database/seed/`, `docs/erd/` |
-| TV3 – _Lương Tiến Dũng_ | @luongtiendung-tech | Lập trình CSDL: truy vấn, view, chỉ mục, EXPLAIN | Bác sĩ | `database/queries.sql`, `database/programmability/views/`, `database/performance/` |
-| TV4 – _Phùng Thị Minh Ánh_ | @phunganh2006123-cmyk | DBA: thủ tục, hàm, trigger, giao dịch đồng thời | Dược sĩ | `database/programmability/`, `tests/concurrency/` |
-| TV5 – _Đinh Tuấn Cường_ | @cuongdanghocutt-afk | Phát triển ứng dụng: ORM, API, kiểm thử, Docker | Lịch hẹn + khung ứng dụng | `app/`, `tests/`, `docker-compose.yml` |
+| Thành viên | GitHub | Vai trò | Phụ trách chính | Hỗ trợ | Thư mục chính |
+| --- | --- | --- | --- | --- | --- |
+| TV1 – Nguyễn Vân Anh | @nguyenvananh09112006-hue | Trưởng nhóm / Phân tích nghiệp vụ | Đặc tả yêu cầu, use case, quy tắc BR; quản lý GitHub Projects; nộp các mốc; tổng hợp báo cáo và slide | Thiết kế ERD cùng TV2 | `docs/` |
+| TV2 – Nguyễn Thị Thùy Dung | @dungnguyen280706 | Thiết kế CSDL | ERD, chuẩn hóa 3NF, từ điển dữ liệu, DDL qua migration Flyway | Script sinh dữ liệu mẫu cùng TV5 | `database/migrations/`, `database/seed/`, `docs/erd/` |
+| TV3 – Lương Tiến Dũng | @luongtiendung-tech | Lập trình CSDL | Truy vấn nghiệp vụ, view, thủ tục lưu trữ, hàm, trigger nghiệp vụ và trigger audit | Kiểm thử tầng dữ liệu cùng TV5 | `database/queries.sql`, `database/programmability/` |
+| TV4 – Phùng Thị Minh Ánh | @phunganh2006123-cmyk | DBA | Vai trò CSDL và GRANT/REVOKE, chỉ mục và EXPLAIN ANALYZE, xử lý đồng thời, sao lưu và phục hồi | Kiểm tra ràng buộc trong DDL của TV2 | `database/security/`, `database/performance/`, `database/backup/`, `tests/concurrency/` |
+| TV5 – Đinh Tuấn Cường | @cuongdanghocutt-afk | Phát triển ứng dụng | Spring Boot, ánh xạ JPA, API, Swagger, giao diện tối thiểu, kiểm thử Testcontainers, Docker Compose | Video demo cùng TV1 | `app/`, `tests/`, `docker-compose.yml` |
 
-Mọi thành viên đều tự viết SQL và phải giải thích được toàn bộ lược đồ khi vấn đáp.
+Việc chung của cả nhóm:
+
+- Mỗi người tự viết **4 truy vấn** trong `database/queries.sql`, ghi tên người viết ở chú thích. TV3 điều phối để đủ các loại bắt buộc.
+- TV2, TV3, TV4 mỗi người viết **≥ 3 ca kiểm thử** cho phần mình; TV5 dựng khung Testcontainers.
+- **Mọi thành viên vẫn tự viết SQL và hiểu toàn bộ lược đồ**, vì vấn đáp hỏi từng cá nhân.
+
+Tiến độ theo dõi trên board GitHub Projects: [DT01 – Kế hoạch 13 tuần](https://github.com/users/nguyenvananh09112006-hue/projects/2) (thực hiện trong 5 tuần, 23/11 – 27/12/2026).
 
 ## Quy trình Git
 
@@ -23,22 +29,24 @@ Mọi thành viên đều tự viết SQL và phải giải thích được toà
    ```bash
    git checkout main
    git pull
-   git checkout -b feature/tv2-khao-sat-hanh-chinh
+   git checkout -b db/tv2-schema-v1
    ```
 3. Commit nhỏ, thông điệp rõ ràng:
    ```bash
    git add .
-   git commit -m "docs: khao sat nghiep vu hanh chinh"
-   git push -u origin feature/tv2-khao-sat-hanh-chinh
+   git commit -m "db: tao bang benh nhan va the bhyt"
+   git push -u origin db/tv2-schema-v1
    ```
 4. Mở Pull Request vào `main`, gắn issue (`Closes #12`), chọn reviewer theo vòng xoay.
 5. Chỉ merge khi có ≥ 1 approve. Xóa nhánh sau khi merge.
+
+Hạn nội bộ: mở PR trước **21h**, reviewer duyệt trong **12 giờ**.
 
 ### Đặt tên nhánh
 
 `<loại>/<tvX>-<mô-tả-ngắn>`. Loại: `feature`, `fix`, `docs`, `db`, `test`, `chore`.
 
-Ví dụ: `db/tv4-trigger-chan-ke-vuot-ton`, `docs/tv1-dac-ta-m1`.
+Ví dụ: `db/tv3-trigger-chan-ke-vuot-ton`, `db/tv4-roles-grant`, `docs/tv1-dac-ta-m1`.
 
 ### Thông điệp commit
 
@@ -54,9 +62,18 @@ Ví dụ: `db/tv4-trigger-chan-ke-vuot-ton`, `docs/tv1-dac-ta-m1`.
 | TV4 | TV3 |
 | TV5 | TV4 |
 
+Riêng PR thay đổi DDL (`database/migrations/`) của TV2 luôn cần thêm **TV4** duyệt phần ràng buộc.
+
+## Đánh giá đóng góp
+
+Điểm cá nhân = Điểm nhóm (90%) × hệ số đóng góp + Vấn đáp cá nhân (10%).
+Hệ số 0,6–1,2, xét theo **commit và pull request**, đánh giá chéo ẩn danh (M2, cuối kỳ) và vấn đáp. Không giải thích được lược đồ của nhóm thì hệ số tối đa 0,7.
+Vì vậy mỗi người phải tự commit phần việc của mình bằng tài khoản của mình; không nhờ người khác commit hộ.
+
 ## Quy định bắt buộc
 
-- Không commit bí mật: `.env`, mật khẩu, file dump CSDL.
-- Không force push lên `main`; không sửa lịch sử sau khi gắn tag `final`.
-- Chỉ dùng dữ liệu sinh tự động, không dùng dữ liệu bệnh nhân thật.
-- Dùng công cụ AI phải khai báo trong phụ lục báo cáo. ERD và chuẩn hóa do nhóm tự làm.
+- **Git:** commit bằng tài khoản của mình, làm trên nhánh riêng, gộp qua PR có ≥ 1 người review. Không force push lên `main`; không sửa lịch sử sau khi gắn tag `final`.
+- **Bí mật:** không commit `.env`, mật khẩu, file dump CSDL.
+- **Công cụ AI:** được dùng nếu khai báo trong phụ lục báo cáo. ERD và chuẩn hóa do nhóm tự làm, AI chỉ rà soát. Mọi dòng SQL trong repo, người commit phải giải thích được khi vấn đáp; không giải thích được thì phần đó không được tính điểm.
+- **Sao chép:** mã mẫu, thư viện, lược đồ công khai phải ghi nguồn trong mục "Nguồn tham khảo" của `README.md`. Đồ án khóa trước cũng là nguồn. Trùng lặp không ghi nguồn bị xử lý theo quy định của trường.
+- **Dữ liệu:** chỉ dùng dữ liệu sinh tự động hoặc dữ liệu công khai có giấy phép. Không dùng dữ liệu cá nhân thật của bệnh nhân.
