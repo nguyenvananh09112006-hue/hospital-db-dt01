@@ -1,107 +1,52 @@
-# BÁO CÁO CHUẨN HÓA DỮ LIỆU ĐẠT CHUẨN 3NF (MỐC M2)
-## ĐỀ TÀI: DT01 – QUẢN LÝ BỆNH VIỆN
+## Mục tiêu
+Sửa `docs/normalization_3nf.md` cho đúng định nghĩa 2NF/3NF và khớp với đặc tả 1.1 (`docs/specifications.md`).
+Theo quy định học phần, phần chuẩn hóa do nhóm tự viết; AI chỉ dùng để rà soát.
 
----
+## Định nghĩa dùng thống nhất
+- **2NF:** mọi thuộc tính không khóa phụ thuộc đầy đủ vào **mọi** khóa ứng viên (không chỉ khóa chính).
+- **3NF:** với mọi phụ thuộc hàm không tầm thường X → A: X là siêu khóa, hoặc A là thuộc tính khóa.
+- **Heath:** R(X, Y, Z) có X → Y ⇒ tách R1(X, Y), R2(X, Z) không mất thông tin.
+- Mỗi bảng làm theo 6 bước: thuộc tính → tập phụ thuộc hàm đầy đủ → mọi khóa ứng viên → thuộc tính khóa/không khóa → kiểm tra 1NF/2NF/3NF → tách (chứng minh không mất thông tin và bảo toàn phụ thuộc).
 
-## I. NGUYÊN TẮC CHUẨN HÓA
-Theo yêu cầu đề cương môn học (Slide 9):
-* Mọi quan hệ trong CSDL vật lý phải đạt tối thiểu **Chuẩn dạng 3 (3NF)**.
-* Chứng minh toán học thông qua hệ quy tắc phụ thuộc hàm (FD) cho ít nhất **3 bảng cốt lõi**.
-* Giải trình cụ thể nếu có sử dụng kỹ thuật **Phi chuẩn hóa (Denormalization)** và phương án duy trì tính nhất quán.
+## Checklist
 
----
+### Phần I – Nguyên tắc
+- [ ] Sửa "Slide 9" → slide 10 ("Yêu cầu chung 1/3")
+- [ ] Thêm mô tả quy trình 6 bước
 
-## II. CHỨNG MINH 3NF CHO 3 BẢNG CỐT LÕI
+### II.1 – `benh_nhan`
+- [ ] Bổ sung khóa ứng viên `ma_bn`; bỏ `cccd` khỏi khóa ứng viên (cho phép NULL theo BR08, chỉ là UNIQUE)
+- [ ] Viết đủ vế phải các phụ thuộc hàm, không dùng "..."
+- [ ] 2NF: lập luận theo **mọi** khóa ứng viên
+- [ ] Chọn một cách lưu địa chỉ (bảng `tinh_thanh` hoặc chuỗi), xóa câu mâu thuẫn ở dòng 40, khớp với DDL
+- [ ] Chứng minh tách không mất thông tin (Heath) và bảo toàn phụ thuộc
 
-### 1. BẢNG `benh_nhan` (Hồ sơ bệnh nhân)
+### II.2 – `chi_tiet_don_thuoc` (theo QĐ01: nối `thuoc_id`)
+- [ ] Đổi `lo_thuoc_id` → `thuoc_id`; quan hệ ban đầu có thêm thuộc tính của thuốc để phân tích tách
+- [ ] Chốt có `UNIQUE (don_thuoc_id, thuoc_id)` hay không, rồi xác định khóa ứng viên tương ứng
+- [ ] Xóa câu "khi chọn id làm khóa thay thế…"; nêu rõ dạng chuẩn xét theo mọi khóa ứng viên
+- [ ] Giải thích `don_gia` là giá chụp tại thời điểm kê (không bắc cầu qua `thuoc_id`)
+- [ ] Thống nhất tên cột `don_gia`; nhắc tới bảng `chi_tiet_xuat_lo`
 
-#### A. Trạng thái chưa chuẩn hóa (Lược đồ ban đầu):
-Xét quan hệ:
-`R_BENH_NHAN (id, ma_bn, ho_ten, cccd, ngay_sinh, gioi_tinh, so_dien_thoai, dia_chi_chi_tiet, ma_tinh, ten_tinh)`
+### II.3 – `lo_thuoc`
+- [ ] Thêm `phieu_nhap_id`
+- [ ] 2NF: xét khóa phức hợp `{thuoc_id, so_lo}`
+- [ ] (Gợi ý) Quan hệ ban đầu có ngày nhập, nhà cung cấp → chỉ ra bắc cầu qua `phieu_nhap_id`, tách ra `phieu_nhap_kho`
+- [ ] Chuyển `so_luong_ton` sang phần III
 
-* **Tập phụ thuộc hàm $F_1$:**
-  1. $id \rightarrow \{ma\_bn, ho\_ten, cccd, ngay\_sinh, gioi\_tinh, so\_dien\_thoai, dia\_chi\_chi\_tiet, ma\_tinh, ten\_tinh\}$
-  2. $cccd \rightarrow \{id, ma\_bn, ho\_ten, ...\}$
-  3. $ma\_tinh \rightarrow \{ten\_tinh\}$
+### Bảng bổ sung
+- [ ] Chứng minh thêm 1 bảng có khóa phức hợp tự nhiên: `ca_kham` hoặc `the_bhyt`
 
-* **Khóa ứng viên (Candidate Key):** $K = \{id\}$ hoặc $K = \{cccd\}$. Chọn Khóa chính: $PK = \{id\}$.
+### Phần III – Phi chuẩn hóa (mỗi trường hợp đủ 7 mục: cột, công thức, vì sao vi phạm, lý do lưu, rủi ro, cơ chế nhất quán, kiểm chứng)
+- [ ] `hoa_don`: chỉ rõ phụ thuộc hàm trong cùng dòng vi phạm 3NF; lý do chính là chốt số tiền tại thời điểm lập; bỏ "O(N) → O(1)"
+- [ ] `hoa_don`: cơ chế theo đặc tả (tính ở UC04; BR02 + trạng thái `HOAN_THANH`; BR14; CHECK); thống nhất tên cột với BR07
+- [ ] `hoa_don`: giải thích lựa chọn mức cô lập giao dịch
+- [ ] `lo_thuoc.so_luong_ton`: công thức, nơi được cập nhật, CHECK, quyền UPDATE, truy vấn đối soát
 
-#### B. Phân tích các chuẩn dạng:
-* **Đạt 1NF:** Tất cả các thuộc tính đều chứa giá trị nguyên tố (atomic value), không có mảng hay thuộc tính lặp.
-* **Đạt 2NF:** Khóa chính $\{id\}$ là khóa đơn (gồm 1 thuộc tính), nên mọi thuộc tính không khóa đều phụ thuộc hàm đầy đủ vào khóa chính, không có phụ thuộc hàm một phần.
-* **Vi phạm 3NF:** Tồn tại phụ thuộc hàm bắc cầu:
-  $$id \rightarrow ma\_tinh \quad \text{và} \quad ma\_tinh \rightarrow ten\_tinh \quad (ma\_tinh \text{ không phải là siêu khóa})$$
-  Điều này dẫn đến dư thừa dữ liệu (tên tỉnh bị lặp lại hàng nghìn lần) và bất thường khi cập nhật.
+### Phần IV – Bảng tổng hợp
+- [ ] Bảng gồm mọi bảng trong lược đồ: khóa chính, khóa ứng viên/UNIQUE, dạng chuẩn, ghi chú
 
-#### C. Khắc phục chuẩn hóa về 3NF:
-Tách quan hệ $R\_BENH\_NHAN$ thành 2 quan hệ không mất mát thông tin:
-1. `tinh_thanh (ma_tinh, ten_tinh)` với $PK = \{ma\_tinh\}$.
-2. `benh_nhan (id, ma_bn, ho_ten, cccd, ngay_sinh, gioi_tinh, so_dien_thoai, dia_chi_chi_tiet, ma_tinh)` với $PK = \{id\}$, $FK = \{ma\_tinh\}$.
-*(Trong thực tế triển khai bảng phẳng địa chỉ, chuỗi `dia_chi` lưu toàn bộ định dạng hành chính, loại bỏ cột `ten_tinh` dư thừa để triệt tiêu phụ thuộc bắc cầu).*
-
-$$\Rightarrow \text{Bảng } benh\_nhan \text{ đạt chuẩn 3NF.}$$
-
----
-
-### 2. BẢNG `chi_tiet_don_thuoc` (Chi tiết các loại thuốc trong đơn)
-
-#### A. Trạng thái khảo sát:
-Xét quan hệ chi tiết đơn thuốc:
-`R_CHI_TIET_DON (id, don_thuoc_id, lo_thuoc_id, so_luong, don_gia_ban, lieu_dung, cach_dung, ten_thuoc, han_su_dung)`
-
-* **Tập phụ thuộc hàm $F_2$:**
-  1. $id \rightarrow \{don\_thuoc\_id, lo\_thuoc\_id, so\_luong, don\_gia\_ban, lieu\_dung, cach\_dung\}$
-  2. $\{don\_thuoc\_id, lo\_thuoc\_id\} \rightarrow \{so\_luong, don\_gia\_ban, lieu\_dung, cach\_dung\}$
-  3. $lo\_thuoc\_id \rightarrow \{han\_su\_dung, ten\_thuoc\}$
-
-* **Khóa chính:** $PK = \{id\}$.
-
-#### B. Phân tích các chuẩn dạng:
-* **Kiểm tra 2NF:** Nếu dùng khóa phức hợp $\{don\_thuoc\_id, lo\_thuoc\_id\}$, thuộc tính $ten\_thuoc, han\_su\_dung$ chỉ phụ thuộc một phần vào $lo\_thuoc\_id$ (vi phạm 2NF).
-* **Kiểm tra 3NF:** Khi chọn $id$ làm khóa thay thế (surrogate key), $id \rightarrow lo\_thuoc\_id$ và $lo\_thuoc\_id \rightarrow \{han\_su\_dung, ten\_thuoc\}$, dẫn đến phụ thuộc hàm bắc cầu qua thuộc tính không khóa $lo\_thuoc\_id$.
-
-#### C. Khắc phục chuẩn hóa về 3NF:
-Tách triệt để thông tin thuốc và lô thuốc ra khỏi chi tiết đơn thuốc:
-* `lo_thuoc (id, thuoc_id, so_lo, han_su_dung, ...)`
-* `thuoc (id, ten_thuoc, ...)`
-* `chi_tiet_don_thuoc (id, don_thuoc_id, lo_thuoc_id, so_luong, don_gia, lieu_dung, cach_dung)`:
-  Mọi thuộc tính $\{so\_luong, don\_gia, lieu\_dung, cach\_dung\}$ đều phụ thuộc trực tiếp vào $\{id\}$ và không có thuộc tính nào phụ thuộc vào thuộc tính không khóa khác.
-
-$$\Rightarrow \text{Bảng } chi\_tiet\_don\_thuoc \text{ đạt chuẩn 3NF.}$$
-
----
-
-### 3. BẢNG `lo_thuoc` (Quản lý kho dược theo lô)
-
-#### A. Trạng thái khảo sát:
-`R_LO_THUOC (id, thuoc_id, so_lo, ngay_san_xuat, han_su_dung, so_luong_nhap, so_luong_ton, gia_nhap)`
-
-* **Tập phụ thuộc hàm $F_3$:**
-  1. $id \rightarrow \{thuoc\_id, so\_lo, ngay\_san\_xuat, han\_su\_dung, so\_luong\_nhap, so\_luong\_ton, gia\_nhap\}$
-  2. $\{thuoc\_id, so\_lo\} \rightarrow \{id, ngay\_san\_xuat, han\_su\_dung, so\_luong\_nhap, so\_luong\_ton, gia\_nhap\}$
-
-* **Khóa ứng viên:** $K_1 = \{id\}$, $K_2 = \{thuoc\_id, so\_lo\}$. Chọn $PK = \{id\}$ và đặt ràng buộc `UNIQUE (thuoc_id, so_lo)`.
-
-#### B. Phân tích:
-* Khóa chính là $id$ (đơn nhất) $\rightarrow$ Đạt 2NF.
-* Trong tập thuộc tính không khóa: Không có phụ thuộc hàm $X \rightarrow Y$ nào giữa các thuộc tính không khóa (ví dụ $so\_luong\_ton$ không xác định $han\_su\_dung$).
-* Mọi thuộc tính không khóa đều phụ thuộc trực tiếp vào khóa chính.
-
-$$\Rightarrow \text{Bảng } lo\_thuoc \text{ đạt chuẩn 3NF.}$$
-
----
-
-## III. GIẢI TRÌNH PHI CHUẨN HÓA CÓ CHỦ ĐÍCH (DENORMALIZATION)
-
-Theo Slide 9: *"Phi chuẩn hóa phải nêu lý do và cách giữ nhất quán"*.
-
-* **Bảng áp dụng:** Bảng `hoa_don`.
-* **Cột phi chuẩn hóa:** `tien_cls`, `tien_thuoc`, `tong_tien_thanh_toan`.
-* **Lý do kỹ thuật:**
-  * Bảng `chi_tiet_chi_dinh` và `chi_tiet_don_thuoc` phát sinh hàng trăm nghìn giao dịch mỗi tháng.
-  * Nếu mỗi lần thu ngân xem danh sách hóa đơn viện phí đều phải thực hiện `SUM()` qua nhiều bảng lớn với hàng triệu dòng, cơ sở dữ liệu sẽ bị quá tải I/O (Full Table Scan / Hash Aggregate), gây nghẽn màn hình thu viện phí.
-  * Việc lưu sẵn `tong_tien_thanh_toan` tại thời điểm xuất hóa đơn giúp giảm độ phức tạp truy vấn từ $O(N)$ xuống $O(1)$.
-* **Giải pháp duy trì tính nhất quán tuyệt đối:**
-  1. **Tầng Giao dịch (Transaction ACID):** Chỉ cho phép tính toán và ghi nhận tổng tiền trong Stored Procedure đóng ca khám `sp_thanh_toan_hoa_don` với mức cô lập giao dịch `REPEATABLE READ`.
-  2. **Ràng buộc CHECK:** `CHECK (tong_tien_thanh_toan = tien_kham + tien_cls + tien_thuoc - tien_bhyt_chi_tra)`.
-  3. **Khóa đơn thuốc:** Sử dụng Trigger chặn cập nhật đơn thuốc sau khi hóa đơn đã xuất (`DA_THANH_TOAN`).
+### Hoàn tất
+- [ ] Tên bảng/cột khớp đặc tả 1.1 và DDL Flyway
+- [ ] Mỗi thành viên đọc và tự trả lời được 6 câu hỏi vấn đáp (khóa ứng viên vs siêu khóa; cột `id` và 2NF; `don_gia`; JSONB và 1NF; `so_luong_ton`; chứng minh tách `benh_nhan`)
+- [ ] Mở PR, reviewer: TV1 và TV4
