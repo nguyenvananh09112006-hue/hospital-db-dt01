@@ -43,7 +43,7 @@ Trong môi trường bệnh viện và các cơ sở y tế hiện đại, việ
 
 ---
 
-### 2.2. Bảng Danh mục 17 Use Cases
+### 2.2. Bảng Danh mục 18 Use Cases
 
 | Mã UC | Tên Use Case | Tác nhân chính | Mô tả tóm tắt | Tiền điều kiện | Hậu điều kiện |
 | :---: | :--- | :--- | :--- | :--- | :--- |
@@ -64,6 +64,7 @@ Trong môi trường bệnh viện và các cơ sở y tế hiện đại, việ
 | **UC15** | Quản lý nhân viên & Tài khoản | Quản trị viên | Tạo mới bác sĩ, điều dưỡng, nhân viên; cấp tài khoản và gán vai trò (`ROLE`). | Quyền Admin | Tạo tài khoản, mã hóa mật khẩu BCrypt |
 | **UC16** | Tra cứu nhật ký kiểm toán | Quản trị viên | Xem lịch sử các thao tác nhạy cảm (sửa đơn thuốc, hủy chỉ định) lưu qua JSONB. | Quyền Admin | Hiển thị chi tiết bản ghi cũ/mới và người sửa |
 | **UC17** | Hủy chỉ định cận lâm sàng | Bác sĩ | Hủy dịch vụ đã chỉ định nếu phát hiện nhầm lẫn hoặc bệnh nhân từ chối. | Dịch vụ đang `CHO_THUC_HIEN` | Hủy thành công, không tính tiền vào hóa đơn |
+| **UC18** | Đăng nhập hệ thống | Admin, Hành chính, Bác sĩ, Dược sĩ | Người dùng nhập tên đăng nhập và mật khẩu để truy cập hệ thống theo quyền được cấp. | Tài khoản đã được tạo và đang hoạt động | Đăng nhập thành công, người dùng được truy cập các chức năng theo vai trò |
 
 ---
 
@@ -81,6 +82,23 @@ Trong môi trường bệnh viện và các cơ sở y tế hiện đại, việ
 | **BR08** | Tính duy nhất định danh bệnh nhân | Số CCCD/Định danh cá nhân của bệnh nhân là duy nhất trong toàn hệ thống. Mã thẻ BHYT (nếu có) phải gồm đúng 15 ký tự theo quy định chuẩn của Bảo hiểm Xã hội Việt Nam. | `UNIQUE (cccd)` và `CHECK (ma_bhyt IS NULL OR LENGTH(ma_bhyt) = 15)` |
 | **BR09** | Điều kiện hủy cận lâm sàng | Bác sĩ chỉ được phép hủy chỉ định cận lâm sàng khi trạng thái của dịch vụ đó đang là `CHO_THUC_HIEN`. Khi kỹ thuật viên xét nghiệm đã bấm `DANG_THUC_HIEN` thì không được hủy. | Trigger kiểm tra trạng thái trước khi cho phép `DELETE` hoặc chuyển cờ hủy |
 | **BR10** | Toàn vẹn xóa logic (Soft Delete) | Không được phép `DELETE` vật lý các bản ghi danh mục thuốc, dịch vụ hoặc nhân viên y tế đã từng phát sinh liên kết với hồ sơ bệnh án cũ nhằm bảo tồn lịch sử y khoa. Sử dụng cờ `is_active = FALSE`. | Ràng buộc khóa ngoại `ON DELETE RESTRICT` trên các bảng giao dịch chính |
+
+### 2.4. Yêu cầu phi chức năng (Non-Functional Requirements - NFR)
+
+Các yêu cầu phi chức năng quy định những tiêu chí về bảo mật, hiệu năng, độ tin cậy và khả năng bảo trì của hệ thống.
+
+| Mã NFR | Nhóm yêu cầu | Nội dung yêu cầu |
+| :---: | :--- | :--- |
+| **NFR01** | Bảo mật | Hệ thống yêu cầu người dùng đăng nhập trước khi truy cập các chức năng nội bộ. |
+| **NFR02** | Phân quyền | Người dùng chỉ được phép sử dụng các chức năng phù hợp với vai trò Admin, Receptionist/Cashier, Doctor hoặc Pharmacist. |
+| **NFR03** | Bảo vệ mật khẩu | Mật khẩu người dùng phải được băm bằng BCrypt hoặc thuật toán phù hợp, không lưu dưới dạng văn bản thuần. |
+| **NFR04** | Bảo vệ dữ liệu | Thông tin kết nối database và các thông tin bí mật phải được quản lý thông qua biến môi trường, không đưa trực tiếp vào mã nguồn. |
+| **NFR05** | Toàn vẹn dữ liệu | Các nghiệp vụ quan trọng phải sử dụng Transaction để đảm bảo tính nhất quán dữ liệu khi xảy ra lỗi. |
+| **NFR06** | Xử lý đồng thời | Hệ thống phải có cơ chế kiểm soát xung đột khi nhiều người dùng cùng thao tác trên dữ liệu, đặc biệt là tồn kho thuốc và thanh toán. |
+| **NFR07** | Khả năng bảo trì | Mã nguồn được tổ chức theo các tầng Controller, Service, Repository và Entity nhằm dễ dàng bảo trì, mở rộng. |
+| **NFR08** | Kiểm thử | Các chức năng quan trọng phải có kiểm thử tự động; kiểm thử tích hợp sử dụng Testcontainers với PostgreSQL. |
+| **NFR09** | Triển khai | Hệ thống hỗ trợ đóng gói và triển khai môi trường bằng Docker và Docker Compose. |
+| **NFR10** | Quản lý cơ sở dữ liệu | Các thay đổi cấu trúc database phải được quản lý bằng Flyway Migration; không sử dụng cơ chế Hibernate tự động cập nhật cấu trúc database. |
 
 ---
 
