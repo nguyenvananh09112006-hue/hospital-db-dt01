@@ -1,8 +1,6 @@
-    image: postgres:18-alpine
-
 services:
   postgres-db:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: hospital_postgres
     restart: always
     environment:
@@ -12,7 +10,8 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      # PostgreSQL 18+: gắn volume vào /var/lib/postgresql (không phải /var/lib/postgresql/data)
+      - postgres_data:/var/lib/postgresql
 
 volumes:
   postgres_data:
