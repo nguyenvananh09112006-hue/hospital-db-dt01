@@ -122,8 +122,13 @@ Trong môi trường bệnh viện và các cơ sở y tế hiện đại, việ
 ---
 
 ### 2.4. Sơ đồ Use Case tổng quát
-sơ đồ use case chính thức theo ký pháp UML được vẽ bằng draw.io/StarUML và lưu tại docs/
+Sơ đồ use case theo ký pháp UML (file gốc draw.io: `docs/uc-tong-quat.drawio`):
 
+![Sơ đồ use case tổng quát](uc-tong-quat.png)
+
+> Bản Mermaid dưới đây là bản xem nhanh trên GitHub.
+
+```mermaid
 flowchart LR
     AD(["👤 Quản trị viên"])
     HC(["👤 Hành chính"])
