@@ -438,7 +438,7 @@ Từ 22 Use Cases, 15 Quy tắc nghiệp vụ và 10 Yêu cầu phi chức năng
 
 3. **Địa chỉ bệnh nhân lưu dạng chuỗi hay theo mã tỉnh/xã?**
    * **Kết luận:** **Lưu dạng chuỗi văn bản (`dia_chi VARCHAR(255)` hoặc `TEXT`).**
-   * **Giải thích:** Phù hợp với phạm vi đồ án học phần CSDL đại học, tập trung sâu vào nghiệp vụ y khoa cốt lõi (kê đơn, tồn kho, kiểm toán JSONB) thay vì làm phình to mô hình với các bảng danh mục hành chính 63 tỉnh thành / quận huyện / phường xã.
+   * **Giải thích:** Phù hợp với phạm vi đồ án học phần CSDL đại học, tập trung sâu vào nghiệp vụ y khoa cốt lõi (kê đơn, tồn kho, kiểm toán JSONB) thay vì làm phình to mô hình với các bảng danh mục hành chính tỉnh/thành và xã/phường (hiện có 34 tỉnh/thành, không còn cấp huyện).
 
 4. **Mã bệnh nhân có duy nhất và bắt buộc không?**
    * **Kết luận:** **CÓ.**
@@ -446,7 +446,7 @@ Từ 22 Use Cases, 15 Quy tắc nghiệp vụ và 10 Yêu cầu phi chức năng
 
 5. **Cùng một số lô của một thuốc có thể nhập ở 2 phiếu nhập khác nhau không?**
    * **Kết luận:** **CÓ THỂ.**
-   * **Giải thích:** Nhà cung cấp có thể giao hàng thành nhiều đợt trong cùng một lô sản xuất. Trong CSDL, mỗi bản ghi `lo_thuoc` được định danh duy nhất bởi cặp `(thuoc_id, so_lo)` kèm hạn dùng cố định. Khi phát sinh phiếu nhập mới cùng số lô và hạn dùng, hệ thống chỉ cần cộng dồn số lượng nhập vào tồn kho của lô đó thông qua chi tiết phiếu nhập kho.
+   * **Giải thích:** Nhà cung cấp có thể giao hàng thành nhiều đợt trong cùng một lô sản xuất. Trong CSDL, mỗi bản ghi `lo_thuoc` được định danh duy nhất bởi cặp `(thuoc_id, so_lo)` kèm hạn dùng cố định. Mỗi đợt giao là một dòng trong bảng nối `chi_tiet_phieu_nhap` (số lượng nhập, giá nhập); khi nhập, `so_luong_ton` của lô được cộng thêm trong cùng giao dịch.
 
 6. **Đơn giá trong chi tiết đơn / chỉ định là giá chụp tại thời điểm kê (Snapshot Price)?**
    * **Kết luận:** **BẮT BUỘC CÓ.**
