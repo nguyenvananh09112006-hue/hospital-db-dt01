@@ -122,7 +122,7 @@ Trong môi trường bệnh viện và các cơ sở y tế hiện đại, việ
 ---
 
 ### 2.4. Sơ đồ Use Case tổng quát
-
+sơ đồ use case chính thức theo ký pháp UML được vẽ bằng draw.io/StarUML và lưu tại docs/
 
 flowchart LR
     AD(["👤 Quản trị viên"])
