@@ -123,9 +123,7 @@ Trong môi trường bệnh viện và các cơ sở y tế hiện đại, việ
 
 ### 2.4. Sơ đồ Use Case tổng quát
 
-> Sơ đồ Mermaid dưới đây (GitHub hiển thị trực tiếp) là bản xem nhanh; sơ đồ use case chính thức theo ký pháp UML được vẽ bằng draw.io/StarUML và lưu tại `docs/`.
 
-```mermaid
 flowchart LR
     AD(["👤 Quản trị viên"])
     HC(["👤 Hành chính"])
