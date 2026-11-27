@@ -353,6 +353,37 @@ Các yêu cầu phi chức năng quy định những tiêu chí về bảo mật
 
 ---
 
+### 2.9. Ma trận ánh xạ Use Case × Quy tắc nghiệp vụ (UC × BR)
+
+Bảng ma trận thể hiện sự ràng buộc giữa 22 Ca sử dụng (Use Cases) và 15 Quy tắc nghiệp vụ bắt buộc (Business Rules):
+
+| Mã UC | Tên Use Case | Quy tắc nghiệp vụ liên quan (BR) | Cơ chế CSDL bảo đảm |
+| :---: | :--- | :--- | :--- |
+| **UC01** | Đăng ký hồ sơ BN | **BR08**, **BR15** | Ràng buộc `UNIQUE(cccd)`, format thẻ BHYT và kiểm tra `ngay_sinh <= CURRENT_DATE` |
+| **UC02** | Tra cứu hồ sơ BN | **BR13** | Phân quyền bảo mật qua View ẩn thông tin nhạy cảm (`v_ho_so_benh_an_an_danh`) |
+| **UC03** | Đặt lịch khám & phân phòng | **BR01**, **BR02** | `UNIQUE` tránh trùng lịch hẹn bác sĩ trong cùng khung giờ; ca khám tạo ở `CHO_KHAM` |
+| **UC04** | Lập hóa đơn viện phí | **BR07**, **BR14** | Stored Procedure quyết toán tính đúng tiền, Partial index bảo đảm duy nhất 1 hóa đơn hợp lệ |
+| **UC05** | Thu tiền & in biên lai | **BR07**, **BR14** | Trigger cấm sửa/xóa hóa đơn đã `DA_THANH_TOAN`, bảo đảm tính bất biến |
+| **UC06** | Xem hàng đợi khám | **BR12**, **BR13** | View `v_hang_doi_bac_si` chỉ lọc ca khám của bác sĩ đang đăng nhập |
+| **UC07** | Khám bệnh & Ghi chẩn đoán | **BR02**, **BR12** | Trigger kiểm tra trạng thái chuyển `CHO_KHAM` $\rightarrow$ `DANG_KHAM` và quyền sở hữu ca khám |
+| **UC08** | Chỉ định dịch vụ CLS | **BR02**, **BR12**, **BR15** | Trigger kiểm tra trạng thái ca khám đang `DANG_KHAM`, `CHECK(so_luong > 0, don_gia >= 0)` |
+| **UC09** | Xem kết quả CLS | **BR12**, **BR13** | Quyền xem kết quả chỉ cho bác sĩ phụ trách và KTV thực hiện |
+| **UC10** | Kê đơn thuốc điện tử | **BR02**, **BR03**, **BR04**, **BR12**, **BR15** | **Trigger BEFORE kê đơn:** Khóa dòng `thuoc ... FOR UPDATE`, chặn kê vượt tồn khả dụng, lọc hạn dùng, `CHECK(so_luong > 0)` |
+| **UC11** | Duyệt & xuất thuốc theo đơn | **BR04**, **BR05**, **BR11** | SP xuất kho `FOR UPDATE` theo lô FEFO; Trigger khóa bất biến đơn thuốc khi chuyển `DA_XUAT` |
+| **UC12** | Nhập kho thuốc theo lô | **BR04**, **BR15** | `CHECK(han_su_dung > ngay_san_xuat)`, `CHECK(so_luong_nhap > 0, gia_nhap >= 0)` |
+| **UC13** | Kiểm kê & cảnh báo tồn | **BR04** | View lọc cảnh báo hạn dùng $< 30$ ngày và tồn kho dưới ngưỡng an toàn |
+| **UC14** | Quản lý danh mục y tế | **BR10** | Xóa logic (Soft Delete `is_active = FALSE`), khóa ngoại `ON DELETE RESTRICT` bảo tồn lịch sử |
+| **UC15** | Quản lý nhân viên & tài khoản | **BR10**, **BR13** | Soft delete tài khoản/nhân viên, cấp quyền RBAC theo vai trò |
+| **UC16** | Tra cứu nhật ký kiểm toán | **BR06**, **BR13** | Bảng `audit_log` chỉ cho phép `SELECT`, cấm `UPDATE/DELETE`, lưu dạng `JSONB` |
+| **UC17** | Hủy chỉ định CLS | **BR06**, **BR09**, **BR12** | Trigger chặn hủy khi dịch vụ đã `DANG_THUC_HIEN`; Trigger ghi log kiểm toán JSONB khi hủy |
+| **UC18** | Thực hiện CLS & nhập kết quả | **BR09**, **BR13** | Chuyển trạng thái `DANG_THUC_HIEN` $\rightarrow$ `CO_KET_QUA`, chỉ KTV phòng xét nghiệm thực hiện |
+| **UC19** | Kết thúc ca khám | **BR02**, **BR12** | Trigger kiểm tra hoàn tất kết quả CLS trước khi chuyển `HOAN_THANH` |
+| **UC20** | Hủy lịch hẹn / ca khám | **BR01**, **BR02** | Chuyển `DA_HUY`, ghi rõ lý do và giải phóng khung giờ lịch khám của bác sĩ |
+| **UC21** | Sửa / Hủy đơn chưa xuất | **BR03**, **BR05**, **BR06**, **BR12** | Tính lại số lượng tạm giữ; cấm sửa nếu `DA_XUAT`; Trigger tự động ghi nhật ký sửa đổi sang JSONB |
+| **UC22** | Đăng nhập hệ thống | **BR13** | Xác thực tài khoản hợp lệ, gán quyền CSDL tương ứng (`role_doctor`, `role_pharmacist`,...) |
+
+---
+
 ## CHƯƠNG 3: BƯỚC ĐỆM CHUẨN BỊ CHO THIẾT KẾ CSDL (MỐC M2)
 
 Từ 22 Use Cases, 15 Quy tắc nghiệp vụ và 10 Yêu cầu phi chức năng trên, phân hệ dữ liệu dự kiến được phân công cho **TV2 (Nguyễn Thị Thùy Dung)** xây dựng mô hình ERD với các thực thể cốt lõi sau:
@@ -387,6 +418,34 @@ Từ 22 Use Cases, 15 Quy tắc nghiệp vụ và 10 Yêu cầu phi chức năng
 | **QĐ01** | Bác sĩ kê đơn theo **Thuốc** (`ChiTietDonThuoc` nối `DonThuoc`–`Thuoc`); dược sĩ xuất theo **Lô** qua `ChiTietXuatLo`, phân bổ FEFO. | Đúng thực tế: bác sĩ không chọn lô; liều dùng gắn với thuốc nên không bị tách dòng theo lô; chọn lô là nghiệp vụ của kho (UC11 "đối chiếu lô thuốc thực tế"). | Kê trực tiếp theo lô (`ChiTietDonThuoc` nối `LoThuoc`): một thuốc có thể bị tách thành nhiều dòng, bác sĩ phải biết lô. |
 | **QĐ02** | `so_luong_tam_giu` là giá trị **tính động** từ các đơn `CHO_XUAT`, không lưu thành cột; các giao dịch cùng thuốc được tuần tự hóa bằng khóa dòng `thuoc … FOR UPDATE`. | Không lưu dữ liệu dẫn xuất nên lược đồ giữ 3NF, không có nguy cơ lệch số; một dòng `thuoc` là điểm khóa duy nhất cho mỗi thuốc. | Lưu cột `so_luong_tam_giu` (phi chuẩn hóa): đọc nhanh hơn nhưng phải đồng bộ bằng trigger ở mọi luồng (kê, sửa, hủy, xuất). Sẽ cân nhắc lại ở M4 nếu `EXPLAIN ANALYZE` cho thấy chậm; khi đó phải nêu lý do và cách giữ nhất quán. |
 | **QĐ03** | Người thực hiện trong nhật ký kiểm toán được truyền từ ứng dụng xuống trigger bằng `set_config('app.current_user_id', …, true)`. | Ứng dụng dùng một tài khoản kết nối chung nên `current_user` của CSDL không cho biết người dùng thật; biến cấu hình cục bộ theo giao dịch an toàn với connection pool. | Ghi audit ở tầng ứng dụng (Hibernate Envers): bỏ sót thay đổi thực hiện trực tiếp trên CSDL. |
+
+### 3.2. Chốt các câu hỏi nghiệp vụ cho TV2 thiết kế CSDL (Mốc M2)
+
+Để đảm bảo tính nhất quán và chặt chẽ khi TV2 vẽ ERD và chuẩn hóa lược đồ 3NF, nhóm trưởng chính thức làm rõ và chốt 6 câu hỏi nghiệp vụ cốt lõi sau:
+
+1. **Một thuốc có được nằm ở 2 dòng trong cùng một đơn không?**
+   * **Kết luận:** **KHÔNG.** Trong một đơn thuốc, mỗi loại biệt dược/thuốc chỉ xuất hiện trên duy nhất một dòng chi tiết (`UNIQUE(don_thuoc_id, thuoc_id)` trên bảng `chi_tiet_don_thuoc`).
+   * **Giải thích:** Bác sĩ kê liều lượng tổng theo phác đồ điều trị. Nếu khi xuất kho thực tế phải phân bổ từ 2 lô khác nhau (ví dụ: lô cũ còn 3 viên, lô mới lấy thêm 7 viên cho đủ 10 viên), việc tách dòng xuất này là nghiệp vụ nội bộ của kho dược và được ghi nhận tại bảng nối `chi_tiet_xuat_lo` (theo đúng QĐ01), không làm phức tạp hóa đơn kê của bác sĩ.
+
+2. **Một bác sĩ / một phòng khám chỉ thuộc một khoa?**
+   * **Kết luận:** **CÓ.**
+   * **Giải thích:** Mỗi bác sĩ biên chế vào đúng 1 chuyên khoa chính tại một thời điểm (`khoa_phong_id` là Foreign Key trong bảng `nhan_vien`). Mỗi phòng khám vật lý cũng trực thuộc một khoa chuyên môn xác định (`khoa_phong_id` trong danh mục phòng).
+
+3. **Địa chỉ bệnh nhân lưu dạng chuỗi hay theo mã tỉnh/xã?**
+   * **Kết luận:** **Lưu dạng chuỗi văn bản (`dia_chi VARCHAR(255)` hoặc `TEXT`).**
+   * **Giải thích:** Phù hợp với phạm vi đồ án học phần CSDL đại học, tập trung sâu vào nghiệp vụ y khoa cốt lõi (kê đơn, tồn kho, kiểm toán JSONB) thay vì làm phình to mô hình với các bảng danh mục hành chính 63 tỉnh thành / quận huyện / phường xã.
+
+4. **Mã bệnh nhân có duy nhất và bắt buộc không?**
+   * **Kết luận:** **CÓ.**
+   * **Giải thích:** `ma_benh_nhan VARCHAR(20) UNIQUE NOT NULL`. Đây là mã số hồ sơ y tế duy nhất định danh bệnh nhân trong toàn bộ hệ thống bệnh viện, dùng để tra cứu nhanh lịch sử khám và in thẻ/phiếu tiếp đón.
+
+5. **Cùng một số lô của một thuốc có thể nhập ở 2 phiếu nhập khác nhau không?**
+   * **Kết luận:** **CÓ THỂ.**
+   * **Giải thích:** Nhà cung cấp có thể giao hàng thành nhiều đợt trong cùng một lô sản xuất. Trong CSDL, mỗi bản ghi `lo_thuoc` được định danh duy nhất bởi cặp `(thuoc_id, so_lo)` kèm hạn dùng cố định. Khi phát sinh phiếu nhập mới cùng số lô và hạn dùng, hệ thống chỉ cần cộng dồn số lượng nhập vào tồn kho của lô đó thông qua chi tiết phiếu nhập kho.
+
+6. **Đơn giá trong chi tiết đơn / chỉ định là giá chụp tại thời điểm kê (Snapshot Price)?**
+   * **Kết luận:** **BẮT BUỘC CÓ.**
+   * **Giải thích:** Bảng `chi_tiet_don_thuoc` và `chi_tiet_chi_dinh` bắt buộc phải có cột `don_gia NUMERIC(12,2)` để lưu lại giá bán thuốc / giá dịch vụ ngay tại thời điểm bác sĩ lập đơn. Đơn giá này là lịch sử kế toán bất biến, không bao giờ được phép tính lại theo giá của danh mục hiện thời nếu sau này bệnh viện điều chỉnh giá dịch vụ hoặc giá thuốc.
 
 ---
 
